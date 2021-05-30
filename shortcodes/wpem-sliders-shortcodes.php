@@ -21,7 +21,6 @@ class WPEM_Sliders_Shortcodes {
      * @since 3.1.6
      */
     public function output_events_slider($atts) {
-        error_log(print_r($atts,true));
         extract(shortcode_atts(array(
             'featured'   => null,
             'cancelled'  => null,

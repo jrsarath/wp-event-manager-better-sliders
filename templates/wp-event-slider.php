@@ -1,5 +1,5 @@
 <div class="wpem-prime-event-slider-wrapper wpem-main">
-  <?php while ( $events->have_posts() ) : $events->the_post();?>
+  <?php while ( $events->have_posts() ) : $events->the_post(); ?>
 	<div class="wpem-prime-event-slider-item">
   		<div class="wpem-prime-event-slider-content">
   			<div class="wpem-prime-event-slider-image">
@@ -33,7 +33,6 @@
                             _e(' to', 'wp-event-manager-sliders');
                         }
                         ?>
-                        <br/>
                         <span class="wpem-event-date-time-text">
                             <?php
                             if (get_event_start_date() != get_event_end_date())
@@ -53,10 +52,9 @@
                             ?>
                         </span>
                     </div>
-
-		          <?php if(get_event_ticket_option()){  ?>
-	              <div class="wpem-event-ticket-type" class="wpem-event-ticket-type-text"><span class="wpem-event-ticket-type-text"><?php echo '#'.get_event_ticket_option(); ?></span></div>
-	              <?php } ?>
+		            <?php if(get_event_ticket_option()){  ?>
+	                <div class="wpem-event-ticket-type" class="wpem-event-ticket-type-text"><span class="wpem-event-ticket-type-text"><?php echo '#'.get_event_ticket_option(); ?></span></div>
+	                <?php } ?>
 	            </div>
 	            <div class="wpem-event-description">
 	            	<div class="wpem-event-description-content">
@@ -65,9 +63,78 @@
 						       echo substr($organizerDescription,0,50);
 						 ?>
 					</div>
-					<div class="wpem-event-description-url">
-						<a class="smartex" href="<?php the_permalink(); ?>"><?php _e( 'Read More', 'wp-event-manage-sliders' ); ?> </a>
-					</div>
+
+                    <?php if ($showtickets): ?>
+                        <div class="slider-ticket">
+                            <?php
+                            $tickettype = get_event_ticket_option();
+                            if ($tickettype == 'Free'): ?>
+                                <?php if (count(get_post_meta(get_the_ID(),'_free_tickets')[0]) > 0): ?>
+                                    <?php $tickets = get_post_meta(get_the_ID(), '_free_tickets')[0] ?>
+                                    <div class="ticket">
+                                        <h3 class="ticket-name"><?php echo $tickets[0]['ticket_name'] ?></h3>
+                                        <p>Free</p>
+                                    </div>
+                                    <p class="more-text">
+                                        <?php if (count($tickets) > 1): ?>
+                                            'More Tickets Available'
+                                        <?php endif; ?>
+                                    </p>
+                                    <a class="btn btn-primary btn-block" href="<?php the_permalink(); ?>">
+                                        <?php
+                                            count($tickets) > 1 ? _e( 'Get Tickets', 'wp-event-manage-sliders' ):_e( 'Get Ticket', 'wp-event-manage-sliders' );
+                                        ?>
+                                    </a>
+                                <?php else: ?>
+                                    <?php if (count(get_post_meta(get_the_ID(),'_donation_tickets')[0]) > 0):?>
+                                        <?php $tickets = get_post_meta(get_the_ID(), '_donation_tickets')[0] ?>
+                                        <div class="ticket">
+                                            <h3 class="ticket-name"><?php echo $tickets[0]['ticket_name'] ?></h3>
+                                            <p>
+                                                <?php if(!empty($tickets[0]['ticket_price'])):?>
+                                                    <?php echo get_woocommerce_currency_symbol().$tickets[0]['ticket_price'] ?>
+                                                <?php else: ?>
+                                                    Donate as you wish
+                                                <?php endif; ?>
+                                            </p>
+                                        </div>
+                                        <p class="more-text">
+                                            <?php if (count($tickets) > 1): ?>
+                                                'More Tickets Available'
+                                            <?php endif; ?>
+                                        </p>
+                                        <a class="btn btn-primary btn-block" href="<?php the_permalink(); ?>">
+                                            <?php
+                                            count($tickets) > 1 ? _e( 'Get Tickets', 'wp-event-manage-sliders' ):_e( 'Get Ticket', 'wp-event-manage-sliders' );
+                                            ?>
+                                        </a>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                            <?php elseif ($tickettype == 'Paid/Free' || $tickettype === 'Paid'): ?>
+                                <?php $tickets = get_post_meta(get_the_ID(), '_paid_tickets')[0] ?>
+                                <div class="ticket">
+                                    <h3 class="ticket-name"><?php echo $tickets[0]['ticket_name'] ?></h3>
+                                    <p><?php echo get_woocommerce_currency_symbol().$tickets[0]['ticket_price'] ?></p>
+                                </div>
+                                <p class="more-text">
+                                    <?php if (count($tickets) > 1): ?>
+                                        'More Tickets Available'
+                                    <?php endif; ?>
+                                </p>
+                                <a class="btn btn-primary btn-block" href="<?php the_permalink(); ?>">
+                                    <?php
+                                        count($tickets) > 1 ? _e( 'Get Tickets', 'wp-event-manage-sliders' ):_e( 'Get Ticket', 'wp-event-manage-sliders' );
+                                    ?>
+                                </a>
+                            <?php else: ?>
+                                <div class="wpem-event-description-url">
+                                    <a class="smartex" href="<?php the_permalink(); ?>"><?php _e( 'Read More', 'wp-event-manage-sliders' ); ?> </a>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    <?php else: ?>
+                        <a class="smartex" href="<?php the_permalink(); ?>"><?php _e( 'Read More', 'wp-event-manage-sliders' ); ?> </a>
+                    <?php endif; ?>
 	            </div>
   			</div>
   		</div>
